@@ -275,8 +275,12 @@
             <h2 id="heading-plan" class="view-title">Study Plan & Daily Schedule</h2>
             <p class="view-description">A day-by-day distribution of syllabus units. Select any date along the revision timeline to inspect assigned study blocks.</p>
           </div>
-          <!-- Demonstration Toggle: Allows evaluating both the Populated and Empty state -->
+          <!-- View Controls: Mode indicator & Phase 1 demonstration toggle -->
           <div class="view-controls">
+            <div class="header-chip" id="plan-mode-chip">
+              <span class="chip-label">Schedule Mode:</span>
+              <span class="chip-value" id="plan-mode-badge">Sample Preview</span>
+            </div>
             <button type="button" class="btn btn-sm btn-ghost" id="btn-toggle-empty-state" title="Toggle between populated schedule and empty state to test Phase 1 requirements">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polyline points="1 4 1 10 7 10"></polyline>
@@ -287,8 +291,33 @@
           </div>
         </header>
 
+        <!-- Dynamic At-Risk Warning Indicator in Study Plan View -->
+        <div id="plan-at-risk-banner" class="at-risk-banner hidden" role="alert" hidden>
+          <div class="at-risk-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div class="at-risk-content">
+            <div class="at-risk-headline" id="plan-at-risk-headline">
+              <strong>At-Risk Pace Warning:</strong> <span id="plan-at-risk-summary-text"></span>
+            </div>
+            <div class="at-risk-detail" id="plan-at-risk-detail"></div>
+          </div>
+        </div>
+
         <!-- Container for Populated Schedule State -->
         <div id="plan-populated-container">
+          <!-- Explicit Sample Preview Banner (Visible before real plan is generated) -->
+          <div id="plan-preview-banner" class="plan-preview-banner">
+            <div class="feedback-icon" style="background-color: var(--sage-soft); color: var(--text-dark);" aria-hidden="true">ℹ</div>
+            <div class="feedback-text">
+              <strong>Sample Schedule Preview:</strong> Displaying an illustrative 7-day schedule. Go to <strong>Setup</strong> and click <strong>Generate Study Plan</strong> to calculate your personalized revision timetable.
+            </div>
+          </div>
+
           <!-- Horizontal Scrollable Date Strip -->
           <div class="date-strip-wrapper">
             <div class="date-strip-label">
@@ -360,14 +389,14 @@
               <h3 class="selected-date-heading" id="selected-date-title">
                 Schedule for Wednesday, Oct 14, 2026
               </h3>
-              <div class="schedule-stats">
-                <span class="stat-pill">3 Sample Sessions</span>
-                <span class="stat-pill">4.0 Hours Total</span>
+              <div class="schedule-stats" id="schedule-stats">
+                <span class="stat-pill" id="stat-pill-sessions">3 Sample Sessions</span>
+                <span class="stat-pill" id="stat-pill-hours">4.0 Hours Total</span>
               </div>
             </div>
 
-            <!-- Sample Study-Session Cards (Adjusted to 4.0 hrs total to match daily target) -->
-            <div class="session-cards-grid">
+            <!-- Study-Session Cards (Dynamic Container) -->
+            <div class="session-cards-grid" id="session-cards-grid">
 
               <!-- Session Card 1: Operating Systems (1.5 hrs) -->
               <article class="session-card os-accent">
@@ -494,12 +523,12 @@
           </div>
           <div class="today-date-badge">
             <span class="calendar-icon" aria-hidden="true">📅</span>
-            <span>Wednesday, October 14, 2026</span>
+            <span id="today-date-text">Wednesday, October 14, 2026</span>
           </div>
         </header>
 
         <!-- At-Risk Warning Indicator (Soft amber/red muted banner) -->
-        <div class="at-risk-banner" role="alert">
+        <div id="today-at-risk-banner" class="at-risk-banner hidden" role="alert" style="display: none;">
           <div class="at-risk-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
@@ -508,12 +537,14 @@
             </svg>
           </div>
           <div class="at-risk-content">
-            <div class="at-risk-headline">
-              <strong>At-Risk Pace Warning:</strong> Computer Networks examination is in 35 days with 4 syllabus units.
+            <div class="at-risk-headline" id="today-at-risk-headline">
+              <strong>At-Risk Pace Warning:</strong>
             </div>
-            <p class="at-risk-detail">
-              Current sample progress (38%) is behind target velocity. Recommended: prioritize Data Link framing today to stay on schedule.
-            </p>
+            <div id="today-at-risk-detail-container">
+              <p class="at-risk-detail" id="today-at-risk-detail">
+                Current progress is behind target velocity.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -525,62 +556,14 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Assigned Sessions Checklist</h3>
-                <p class="card-subtext" id="task-counter-text">0 of 3 sample sessions completed (Visual preview)</p>
+                <p class="card-subtext" id="task-counter-text">0 of 0 sessions completed</p>
               </div>
-              <span class="card-badge" id="day-completion-badge">In Progress</span>
+              <span class="card-badge" id="day-completion-badge">Not Started</span>
             </div>
 
-            <!-- Task Rows with Interactive Checkboxes (Total: 4.0 hrs to match daily target) -->
-            <div class="task-rows-list">
-
-              <!-- Task Row 1: Operating Systems (1.5 hrs) -->
-              <div class="task-row" id="task-row-1">
-                <label class="task-checkbox-label">
-                  <input type="checkbox" class="task-checkbox" id="task-chk-1" data-duration="1.5">
-                  <span class="custom-checkmark" aria-hidden="true"></span>
-                  <div class="task-details">
-                    <div class="task-top-meta">
-                      <span class="task-subject-tag os-tag">Operating Systems</span>
-                      <span class="task-time-estimate">1.5 hrs</span>
-                    </div>
-                    <span class="task-title">Unit 3: Memory Management & Paging Algorithms</span>
-                    <span class="task-subtext">Solve numerical questions for FIFO, LRU, and Optimal page fault frequency.</span>
-                  </div>
-                </label>
-              </div>
-
-              <!-- Task Row 2: Computer Networks (1.5 hrs) -->
-              <div class="task-row" id="task-row-2">
-                <label class="task-checkbox-label">
-                  <input type="checkbox" class="task-checkbox" id="task-chk-2" data-duration="1.5">
-                  <span class="custom-checkmark" aria-hidden="true"></span>
-                  <div class="task-details">
-                    <div class="task-top-meta">
-                      <span class="task-subject-tag cn-tag">Computer Networks</span>
-                      <span class="task-time-estimate">1.5 hrs</span>
-                    </div>
-                    <span class="task-title">Unit 2: CRC Error Detection & Sliding Window</span>
-                    <span class="task-subtext">Compute generator polynomial checksums and draw selective repeat window diagrams.</span>
-                  </div>
-                </label>
-              </div>
-
-              <!-- Task Row 3: Web Programming (1.0 hr) -->
-              <div class="task-row" id="task-row-3">
-                <label class="task-checkbox-label">
-                  <input type="checkbox" class="task-checkbox" id="task-chk-3" data-duration="1.0">
-                  <span class="custom-checkmark" aria-hidden="true"></span>
-                  <div class="task-details">
-                    <div class="task-top-meta">
-                      <span class="task-subject-tag web-tag">Web Programming</span>
-                      <span class="task-time-estimate">1.0 hr</span>
-                    </div>
-                    <span class="task-title">Unit 2: Responsive CSS Grid & Layout Debugging</span>
-                    <span class="task-subtext">Code viva layout exercise using CSS custom variables and media queries.</span>
-                  </div>
-                </label>
-              </div>
-
+            <!-- Task Rows with Interactive Checkboxes -->
+            <div class="task-rows-list" id="today-task-rows-list">
+              <!-- Rendered dynamically by renderTodayView() -->
             </div>
 
             <!-- Re-plan Trigger Action Section -->
@@ -597,12 +580,13 @@
               </button>
             </div>
 
-            <!-- Re-plan Demonstration Message (Revealed on click) -->
-            <div id="replan-demo-feedback" class="feedback-banner hidden" role="status">
-              <div class="feedback-icon" aria-hidden="true">ℹ</div>
-              <div class="feedback-text">
-                <strong>Demonstration Notice:</strong> No re-scheduling has occurred. Dynamic redistribution of pending units across remaining days will be calculated by the algorithm in Phase 2.
+            <!-- Re-plan Demonstration / Feedback Message (Revealed on click) -->
+            <div id="replan-demo-feedback" class="feedback-banner hidden" role="status" style="display: none;">
+              <div class="feedback-icon" id="replan-feedback-icon" aria-hidden="true">ℹ</div>
+              <div class="feedback-text" id="replan-feedback-text">
+                <strong>Schedule Updated:</strong> Remaining sessions have been redistributed starting from today.
               </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-replan-view-plan" style="margin-left: auto; display: none;">View Study Plan</button>
             </div>
 
           </div>
@@ -615,79 +599,35 @@
               <div class="card-header">
                 <div>
                   <h3 class="card-title">Subject-wise Progress</h3>
-                  <p class="card-subtext">Sample completion across registered courses (Illustration)</p>
+                  <p class="card-subtext" id="progress-card-subtext">Live completion across registered courses</p>
                 </div>
-                <span class="counter-badge">Semester View</span>
+                <span class="counter-badge" id="progress-card-badge">Semester View</span>
               </div>
 
-              <div class="progress-bars-container">
-
-                <!-- Progress Item 1: Operating Systems -->
-                <div class="progress-item">
-                  <div class="progress-info-row">
-                    <div class="progress-title-wrap">
-                      <span class="color-dot os-dot" aria-hidden="true"></span>
-                      <span class="progress-subject">Operating Systems</span>
-                    </div>
-                    <span class="progress-fraction">3 of 5 Units (60%)</span>
-                  </div>
-                  <div class="progress-track" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Operating Systems Progress">
-                    <div class="progress-fill os-fill" style="width: 60%;"></div>
-                  </div>
-                </div>
-
-                <!-- Progress Item 2: Computer Networks -->
-                <div class="progress-item">
-                  <div class="progress-info-row">
-                    <div class="progress-title-wrap">
-                      <span class="color-dot cn-dot" aria-hidden="true"></span>
-                      <span class="progress-subject">Computer Networks</span>
-                      <span class="badge badge-warning-sm">Lagging</span>
-                    </div>
-                    <span class="progress-fraction">1.5 of 4 Units (38%)</span>
-                  </div>
-                  <div class="progress-track" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="Computer Networks Progress">
-                    <div class="progress-fill cn-fill" style="width: 38%;"></div>
-                  </div>
-                </div>
-
-                <!-- Progress Item 3: Web Programming -->
-                <div class="progress-item">
-                  <div class="progress-info-row">
-                    <div class="progress-title-wrap">
-                      <span class="color-dot web-dot" aria-hidden="true"></span>
-                      <span class="progress-subject">Web Programming</span>
-                      <span class="badge badge-success-sm">On Track</span>
-                    </div>
-                    <span class="progress-fraction">4 of 5 Units (80%)</span>
-                  </div>
-                  <div class="progress-track" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Web Programming Progress">
-                    <div class="progress-fill web-fill" style="width: 80%;"></div>
-                  </div>
-                </div>
-
+              <div class="progress-bars-container" id="progress-bars-container">
+                <!-- Rendered dynamically by renderTodayView() -->
               </div>
             </div>
 
             <!-- Quick Metrics Card -->
             <div class="card summary-metrics-card">
-              <h3 class="card-title metrics-heading">Prep Health Summary (Sample Data)</h3>
+              <h3 class="card-title metrics-heading" id="metrics-heading-title">Prep Health Summary</h3>
               <div class="metrics-grid">
                 <div class="metric-box">
-                  <span class="metric-num">4.0</span>
-                  <span class="metric-label">Hours Assigned Today (Target: 4.0 hrs)</span>
+                  <span class="metric-num" id="metric-today-hours">0.0</span>
+                  <span class="metric-label" id="metric-today-hours-label">Hours Assigned Today</span>
                 </div>
                 <div class="metric-box">
-                  <span class="metric-num">31</span>
-                  <span class="metric-label">Days to First Exam (Nov 14)</span>
+                  <span class="metric-num" id="metric-days-to-exam">-</span>
+                  <span class="metric-label" id="metric-days-to-exam-label">Days to First Exam</span>
                 </div>
                 <div class="metric-box">
-                  <span class="metric-num">14</span>
-                  <span class="metric-label">Total Syllabus Units (3 Subjects)</span>
+                  <span class="metric-num" id="metric-total-units">0</span>
+                  <span class="metric-label" id="metric-total-units-label">Total Syllabus Units</span>
                 </div>
                 <div class="metric-box">
-                  <span class="metric-num">61%</span>
-                  <span class="metric-label">Aggregate Coverage (Sample Data)</span>
+                  <span class="metric-num" id="metric-aggregate-coverage">0%</span>
+                  <span class="metric-label" id="metric-aggregate-coverage-label">Aggregate Coverage</span>
                 </div>
               </div>
             </div>

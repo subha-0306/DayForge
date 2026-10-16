@@ -1011,6 +1011,12 @@ a {
   border-color: #D2D7CC;
 }
 
+.session-card.os-theme { border-left: 4px solid var(--subject-os); }
+.session-card.cn-theme { border-left: 4px solid var(--subject-cn); }
+.session-card.web-theme { border-left: 4px solid var(--subject-web); }
+.session-card.warm-theme { border-left: 4px solid #8A5B14; }
+.session-card.teal-theme { border-left: 4px solid #2F786C; }
+
 .session-time-col {
   width: 120px;
   min-width: 120px;
@@ -1070,6 +1076,8 @@ a {
 .os-badge { background-color: var(--subject-os-subtle); color: var(--subject-os); }
 .cn-badge { background-color: var(--subject-cn-subtle); color: var(--subject-cn); }
 .web-badge { background-color: var(--subject-web-subtle); color: var(--subject-web); }
+.warm-badge { background-color: #FBF3E6; color: #8A5B14; }
+.teal-badge { background-color: #E8F5F1; color: #2F786C; }
 
 .session-status-badge {
   font-size: 0.72rem;
@@ -1178,6 +1186,10 @@ a {
   border-radius: var(--radius-md);
   padding: 16px 20px;
   margin-bottom: 28px;
+}
+
+.at-risk-banner.hidden {
+  display: none !important;
 }
 
 .at-risk-icon {
@@ -1310,6 +1322,8 @@ a {
 .os-tag { color: var(--subject-os); }
 .cn-tag { color: var(--subject-cn); }
 .web-tag { color: var(--subject-web); }
+.warm-tag { color: #8A5B14; }
+.teal-tag { color: #2F786C; }
 
 .task-time-estimate {
   font-size: 0.75rem;
@@ -1397,6 +1411,8 @@ a {
 .os-dot { background-color: var(--subject-os); }
 .cn-dot { background-color: var(--subject-cn); }
 .web-dot { background-color: var(--subject-web); }
+.warm-dot { background-color: #8A5B14; }
+.teal-dot { background-color: #2F786C; }
 
 .progress-subject {
   font-size: 0.88rem;
@@ -1446,6 +1462,8 @@ a {
 .os-fill { background-color: var(--subject-os); }
 .cn-fill { background-color: #D9822B; }
 .web-fill { background-color: var(--subject-web); }
+.warm-fill { background-color: #8A5B14; }
+.teal-fill { background-color: #2F786C; }
 
 /* Quick Metrics Card */
 .summary-metrics-card {
@@ -1632,3 +1650,107 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Phase 4: Dynamic Study Plan & Real Scheduling Engine Styles
+   ========================================================================== */
+.plan-preview-banner {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface-warm);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plan-preview-banner.hidden {
+  display: none !important;
+}
+
+.feedback-banner.at-risk {
+  background-color: var(--alert-bg);
+  border-color: var(--alert-border);
+  color: #704E15;
+}
+
+.feedback-banner.at-risk .feedback-icon {
+  background-color: #C05621;
+}
+
+.at-risk-units-list {
+  margin-top: 10px;
+  padding-left: 20px;
+  font-size: 0.82rem;
+  color: #704E15;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.at-risk-units-list li {
+  line-height: 1.4;
+}
+
+.at-risk-suggestion {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #704E15;
+}
+
+.empty-day-session {
+  background-color: var(--bg-surface);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Phase 5: Completion Tracking, Progress Bars & Re-planning Styles
+   ========================================================================== */
+.empty-today-tasks {
+  background-color: var(--bg-surface);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 36px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-today-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--sage-soft);
+  color: var(--primary-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-today-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.empty-today-desc {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  max-width: 400px;
+  line-height: 1.45;
+}
+
+.completed-session {
+  opacity: 0.85;
+}
+
