@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Study Planner | College Revision Scheduler</title>
+  <meta name="description" content="A calm, structured study planner for college students. Organize subjects, exam dates, syllabus units, and generate balanced revision schedules.">
+
+  <!-- Google Font: Plus Jakarta Sans for clean, modern academic typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-layout">
+
+    <!-- Sidebar Navigation (Desktop View) -->
+    <aside class="sidebar" aria-label="Main Navigation">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <!-- Clean academic notebook / calendar SVG icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            <path d="M6 6h10"/>
+            <path d="M6 10h10"/>
+            <path d="M6 14h6"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">StudyForge</h1>
+          <span class="brand-subtitle">Exam Study Planner</span>
+        </div>
+      </div>
+
+      <!-- Navigation links: switch views without reloading the page -->
+      <nav class="nav-menu">
+        <button type="button" class="nav-item active" data-view="view-setup" id="nav-btn-setup">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          <span>Setup</span>
+        </button>
+
+        <button type="button" class="nav-item" data-view="view-plan" id="nav-btn-plan">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+            <line x1="16" x2="16" y1="2" y2="6"/>
+            <line x1="8" x2="8" y1="2" y2="6"/>
+            <line x1="3" x2="21" y1="10" y2="10"/>
+          </svg>
+          <span>Study Plan</span>
+        </button>
+
+        <button type="button" class="nav-item" data-view="view-today" id="nav-btn-today">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>Today</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer Badge: Informs evaluator of Phase 1 prototype state -->
+      <div class="sidebar-footer">
+        <div class="badge-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Phase 1 Prototype</span>
+        </div>
+        <p class="sidebar-note">Static UI skeleton for university project viva demonstration.</p>
+      </div>
+    </aside>
+
+    <!-- Mobile Top Navigation Bar (Active on tablets & mobile screens) -->
+    <header class="mobile-nav" aria-label="Mobile Navigation">
+      <div class="mobile-brand">
+        <div class="brand-icon small" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            <path d="M6 6h10"/>
+            <path d="M6 10h10"/>
+          </svg>
+        </div>
+        <span class="mobile-title">Exam Study Planner</span>
+      </div>
+      <div class="mobile-tabs" role="tablist">
+        <button type="button" class="mobile-tab-btn active" data-view="view-setup" id="mobile-tab-setup" role="tab" aria-selected="true">Setup</button>
+        <button type="button" class="mobile-tab-btn" data-view="view-plan" id="mobile-tab-plan" role="tab" aria-selected="false">Plan</button>
+        <button type="button" class="mobile-tab-btn" data-view="view-today" id="mobile-tab-today" role="tab" aria-selected="false">Today</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area: Hosts View A, View B, and View C -->
+    <main class="main-content" id="main-content">
+
+      <!-- ========================================== -->
+      <!-- VIEW A: SETUP (Subject Entry & List)       -->
+      <!-- ========================================== -->
+      <section id="view-setup" class="view-panel active-view" aria-labelledby="heading-setup">
+        <!-- View Welcome Header -->
+        <header class="view-header">
+          <div>
+            <h2 id="heading-setup" class="view-title">Setup & Subject Registry</h2>
+            <p class="view-description">Configure your registered subjects, syllabus units, and target exam dates to structure your revision timeline.</p>
+          </div>
+          <div class="header-chip">
+            <span class="chip-label">Target Daily Hours:</span>
+            <span class="chip-value" id="header-daily-hours">4.0 hrs/day</span>
+          </div>
+        </header>
+
+        <!-- Two-Column Grid: Left (Entry Form) | Right (Subjects List & Generate Button) -->
+        <div class="setup-grid">
+
+          <!-- Left Column: Subject Entry Form -->
+          <div class="card form-card">
+            <div class="card-header">
+              <h3 class="card-title">Add New Subject</h3>
+              <span class="card-badge">Course Module</span>
+            </div>
+
+            <form id="subject-entry-form" class="subject-form" novalidate>
+              <!-- Subject Name -->
+              <div class="form-group">
+                <label for="subject-name" class="form-label">Subject Name <span class="required-star">*</span></label>
+                <input 
+                  type="text" 
+                  id="subject-name" 
+                  name="subjectName" 
+                  class="form-input" 
+                  placeholder="e.g., Database Management Systems" 
+                  required
+                >
+              </div>
+
+              <!-- Exam Date & Daily Hours (2-column layout within form) -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="exam-date" class="form-label">Exam Date <span class="required-star">*</span></label>
+                  <input 
+                    type="date" 
+                    id="exam-date" 
+                    name="examDate" 
+                    class="form-input" 
+                    value="2026-11-20"
+                    required
+                  >
+                </div>
+                <div class="form-group">
+                  <label for="daily-hours" class="form-label">Daily Study Target</label>
+                  <div class="input-with-unit">
+                    <input 
+                      type="number" 
+                      id="daily-hours" 
+                      name="dailyHours" 
+                      class="form-input" 
+                      min="1" 
+                      max="14" 
+                      value="4" 
+                      step="0.5"
+                    >
+                    <span class="input-unit">hours</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Syllabus Units -->
+              <div class="form-group">
+                <label for="syllabus-units" class="form-label">Syllabus Unit Names <span class="required-star">*</span></label>
+                <textarea 
+                  id="syllabus-units" 
+                  name="syllabusUnits" 
+                  class="form-textarea" 
+                  rows="4" 
+                  placeholder="Unit 1: Relational Model & SQL&#10;Unit 2: Normalization & Indexing&#10;Unit 3: Transaction Processing&#10;Unit 4: Concurrency Control"
+                ></textarea>
+                <span class="form-hint">Enter syllabus units separated by a new line or commas.</span>
+              </div>
+
+              <!-- Difficulty Options -->
+              <div class="form-group">
+                <label class="form-label">Subject Difficulty</label>
+                <div class="difficulty-options" role="radiogroup" aria-label="Difficulty Level">
+                  <label class="difficulty-radio">
+                    <input type="radio" name="difficulty" value="Easy" id="diff-easy">
+                    <span class="radio-pill easy">Easy</span>
+                  </label>
+                  <label class="difficulty-radio">
+                    <input type="radio" name="difficulty" value="Medium" id="diff-med" checked>
+                    <span class="radio-pill medium">Medium</span>
+                  </label>
+                  <label class="difficulty-radio">
+                    <input type="radio" name="difficulty" value="Hard" id="diff-hard">
+                    <span class="radio-pill hard">Hard</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Form Validation Feedback Message Box -->
+              <div id="form-feedback" class="form-feedback hidden" role="alert" aria-live="polite"></div>
+
+              <!-- Add Subject Button -->
+              <div class="form-actions">
+                <button type="submit" class="btn btn-secondary" id="btn-add-subject">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <span>Add Subject</span>
+                </button>
+                <span class="action-note">Persisted automatically to browser localStorage</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right Column: Subject List & Schedule Trigger -->
+          <div class="setup-list-column">
+
+            <!-- Section: Subject List with dynamically rendered cards -->
+            <div class="card subjects-list-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Enrolled Subjects</h3>
+                  <p class="card-subtext" id="subject-list-subtext">Registered courses stored in your study planner</p>
+                </div>
+                <span class="counter-badge" id="subject-counter-badge">3 Registered</span>
+              </div>
+
+              <div class="subject-cards-list" id="subject-cards-list">
+                <!-- Dynamically rendered by renderSubjects() in script.js -->
+              </div>
+            </div>
+
+            <!-- Prominent Generation Banner Card -->
+            <div class="card generate-cta-card">
+              <div class="generate-cta-content">
+                <div>
+                  <h4 class="cta-title">Ready to build your revision roadmap?</h4>
+                  <p class="cta-text">Calculate session blocks and balance your syllabus across remaining days.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-large" id="btn-generate-plan">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  <span>Generate Study Plan</span>
+                </button>
+              </div>
+
+              <!-- Temporary demonstration message container (revealed on button click) -->
+              <div id="plan-generation-feedback" class="feedback-banner hidden" role="status">
+                <div class="feedback-icon" aria-hidden="true">ℹ</div>
+                <div class="feedback-text">
+                  <strong>Demonstration Preview:</strong> Displaying sample schedule preview. No real scheduling has occurred—the dynamic scheduling algorithm will be integrated in Phase 2.
+                </div>
+                <button type="button" class="btn btn-sm btn-outline" id="btn-view-generated-plan">View Sample Plan &rarr;</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW B: STUDY PLAN (Timetable & Sessions)   -->
+      <!-- ========================================== -->
+      <section id="view-plan" class="view-panel" aria-labelledby="heading-plan" hidden>
+        <!-- View Header -->
+        <header class="view-header">
+          <div>
+            <h2 id="heading-plan" class="view-title">Study Plan & Daily Schedule</h2>
+            <p class="view-description">A day-by-day distribution of syllabus units. Select any date along the revision timeline to inspect assigned study blocks.</p>
+          </div>
+          <!-- Demonstration Toggle: Allows evaluating both the Populated and Empty state -->
+          <div class="view-controls">
+            <button type="button" class="btn btn-sm btn-ghost" id="btn-toggle-empty-state" title="Toggle between populated schedule and empty state to test Phase 1 requirements">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              <span>Toggle Empty State (Demo)</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Container for Populated Schedule State -->
+        <div id="plan-populated-container">
+          <!-- Horizontal Scrollable Date Strip -->
+          <div class="date-strip-wrapper">
+            <div class="date-strip-label">
+              <span>Revision Timeline</span>
+              <span class="date-strip-hint">&larr; Scroll dates horizontally &rarr;</span>
+            </div>
+            <div class="date-strip" id="date-strip" role="tablist" aria-label="Revision Dates">
+              <!-- Day 1 (Default Selected: Wednesday Oct 14) -->
+              <button type="button" class="date-chip active" data-date="2026-10-14" data-day-name="Wednesday, Oct 14" role="tab" aria-selected="true">
+                <span class="day-short">Wed</span>
+                <span class="day-number">14</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="3 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 2: Thursday Oct 15 -->
+              <button type="button" class="date-chip" data-date="2026-10-15" data-day-name="Thursday, Oct 15" role="tab" aria-selected="false">
+                <span class="day-short">Thu</span>
+                <span class="day-number">15</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="3 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 3: Friday Oct 16 -->
+              <button type="button" class="date-chip" data-date="2026-10-16" data-day-name="Friday, Oct 16" role="tab" aria-selected="false">
+                <span class="day-short">Fri</span>
+                <span class="day-number">16</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="2 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 4: Saturday Oct 17 -->
+              <button type="button" class="date-chip" data-date="2026-10-17" data-day-name="Saturday, Oct 17" role="tab" aria-selected="false">
+                <span class="day-short">Sat</span>
+                <span class="day-number">17</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="3 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 5: Sunday Oct 18 -->
+              <button type="button" class="date-chip" data-date="2026-10-18" data-day-name="Sunday, Oct 18" role="tab" aria-selected="false">
+                <span class="day-short">Sun</span>
+                <span class="day-number">18</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="2 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 6: Monday Oct 19 -->
+              <button type="button" class="date-chip" data-date="2026-10-19" data-day-name="Monday, Oct 19" role="tab" aria-selected="false">
+                <span class="day-short">Mon</span>
+                <span class="day-number">19</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="3 sessions scheduled"></span>
+              </button>
+
+              <!-- Day 7: Tuesday Oct 20 -->
+              <button type="button" class="date-chip" data-date="2026-10-20" data-day-name="Tuesday, Oct 20" role="tab" aria-selected="false">
+                <span class="day-short">Tue</span>
+                <span class="day-number">20</span>
+                <span class="month-short">Oct</span>
+                <span class="session-dot" title="2 sessions scheduled"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Schedule Detail Section for the Selected Date -->
+          <div class="selected-day-schedule">
+            <div class="schedule-summary-bar">
+              <h3 class="selected-date-heading" id="selected-date-title">
+                Schedule for Wednesday, Oct 14, 2026
+              </h3>
+              <div class="schedule-stats">
+                <span class="stat-pill">3 Sample Sessions</span>
+                <span class="stat-pill">4.0 Hours Total</span>
+              </div>
+            </div>
+
+            <!-- Sample Study-Session Cards (Adjusted to 4.0 hrs total to match daily target) -->
+            <div class="session-cards-grid">
+
+              <!-- Session Card 1: Operating Systems (1.5 hrs) -->
+              <article class="session-card os-accent">
+                <div class="session-time-col">
+                  <span class="session-start">09:00 AM</span>
+                  <span class="session-duration">1.5 hrs</span>
+                  <span class="session-slot">Morning</span>
+                </div>
+                <div class="session-body">
+                  <div class="session-header">
+                    <span class="subject-badge os-badge">Operating Systems</span>
+                    <span class="session-status-badge">Priority Review</span>
+                  </div>
+                  <h4 class="session-unit-name">Unit 3: Memory Management & Paging</h4>
+                  <p class="session-notes">
+                    Focus on Page Replacement Algorithms (FIFO, LRU, Optimal), TLB lookup latency, and Thrashing prevention methods.
+                  </p>
+                  <div class="session-footer">
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      90 Minutes
+                    </span>
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                      Numerical Practice & Diagrams
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Session Card 2: Computer Networks (1.5 hrs) -->
+              <article class="session-card cn-accent">
+                <div class="session-time-col">
+                  <span class="session-start">02:00 PM</span>
+                  <span class="session-duration">1.5 hrs</span>
+                  <span class="session-slot">Afternoon</span>
+                </div>
+                <div class="session-body">
+                  <div class="session-header">
+                    <span class="subject-badge cn-badge">Computer Networks</span>
+                    <span class="session-status-badge">Core Theory</span>
+                  </div>
+                  <h4 class="session-unit-name">Unit 2: Data Link Layer & Framing</h4>
+                  <p class="session-notes">
+                    Review Cyclic Redundancy Check (CRC) polynomial division, Sliding Window Protocols (Go-Back-N, Selective Repeat), and Bit-Stuffing.
+                  </p>
+                  <div class="session-footer">
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      90 Minutes
+                    </span>
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                      Protocol State Diagrams
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Session Card 3: Web Programming (1.0 hr) -->
+              <article class="session-card web-accent">
+                <div class="session-time-col">
+                  <span class="session-start">05:00 PM</span>
+                  <span class="session-duration">1.0 hr</span>
+                  <span class="session-slot">Evening</span>
+                </div>
+                <div class="session-body">
+                  <div class="session-header">
+                    <span class="subject-badge web-badge">Web Programming</span>
+                    <span class="session-status-badge">Hands-on Code</span>
+                  </div>
+                  <h4 class="session-unit-name">Unit 2: CSS Grid, Flexbox & Responsive Layouts</h4>
+                  <p class="session-notes">
+                    Implement responsive multi-column layouts, media query breakpoints, and custom CSS custom properties (variables).
+                  </p>
+                  <div class="session-footer">
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      60 Minutes
+                    </span>
+                    <span class="session-detail-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                      Practical Viva Questions
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Helpful Empty State Container (Displayed if no plan is generated) -->
+        <div id="plan-empty-state" class="empty-state-card hidden">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+              <line x1="16" x2="16" y1="2" y2="6"/>
+              <line x1="8" x2="8" y1="2" y2="6"/>
+              <line x1="3" x2="21" y1="10" y2="10"/>
+              <line x1="10" x2="14" y1="15" y2="15"/>
+            </svg>
+          </div>
+          <h3 class="empty-state-title">No Study Plan Generated Yet</h3>
+          <p class="empty-state-description">
+            Your revision schedule is waiting to be built. Head over to the Setup view to verify your course modules and click "Generate Study Plan".
+          </p>
+          <button type="button" class="btn btn-primary" id="btn-empty-goto-setup">
+            <span>Go to Setup View &rarr;</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW C: TODAY (Tasks & Progress Overview)  -->
+      <!-- ========================================== -->
+      <section id="view-today" class="view-panel" aria-labelledby="heading-today" hidden>
+        <!-- View Header -->
+        <header class="view-header">
+          <div>
+            <h2 id="heading-today" class="view-title">Today's Study Sessions</h2>
+            <p class="view-description">Track your daily study commitments, check off completed milestones, and monitor syllabus coverage pace.</p>
+          </div>
+          <div class="today-date-badge">
+            <span class="calendar-icon" aria-hidden="true">📅</span>
+            <span>Wednesday, October 14, 2026</span>
+          </div>
+        </header>
+
+        <!-- At-Risk Warning Indicator (Soft amber/red muted banner) -->
+        <div class="at-risk-banner" role="alert">
+          <div class="at-risk-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div class="at-risk-content">
+            <div class="at-risk-headline">
+              <strong>At-Risk Pace Warning:</strong> Computer Networks examination is in 35 days with 4 syllabus units.
+            </div>
+            <p class="at-risk-detail">
+              Current sample progress (38%) is behind target velocity. Recommended: prioritize Data Link framing today to stay on schedule.
+            </p>
+          </div>
+        </div>
+
+        <!-- Two-Column Layout: Left (Today's Tasks) | Right (Subject-wise Progress & Metrics) -->
+        <div class="today-grid">
+
+          <!-- Left Column: Tasks Checklist & Re-plan -->
+          <div class="card tasks-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Assigned Sessions Checklist</h3>
+                <p class="card-subtext" id="task-counter-text">0 of 3 sample sessions completed (Visual preview)</p>
+              </div>
+              <span class="card-badge" id="day-completion-badge">In Progress</span>
+            </div>
+
+            <!-- Task Rows with Interactive Checkboxes (Total: 4.0 hrs to match daily target) -->
+            <div class="task-rows-list">
+
+              <!-- Task Row 1: Operating Systems (1.5 hrs) -->
+              <div class="task-row" id="task-row-1">
+                <label class="task-checkbox-label">
+                  <input type="checkbox" class="task-checkbox" id="task-chk-1" data-duration="1.5">
+                  <span class="custom-checkmark" aria-hidden="true"></span>
+                  <div class="task-details">
+                    <div class="task-top-meta">
+                      <span class="task-subject-tag os-tag">Operating Systems</span>
+                      <span class="task-time-estimate">1.5 hrs</span>
+                    </div>
+                    <span class="task-title">Unit 3: Memory Management & Paging Algorithms</span>
+                    <span class="task-subtext">Solve numerical questions for FIFO, LRU, and Optimal page fault frequency.</span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Task Row 2: Computer Networks (1.5 hrs) -->
+              <div class="task-row" id="task-row-2">
+                <label class="task-checkbox-label">
+                  <input type="checkbox" class="task-checkbox" id="task-chk-2" data-duration="1.5">
+                  <span class="custom-checkmark" aria-hidden="true"></span>
+                  <div class="task-details">
+                    <div class="task-top-meta">
+                      <span class="task-subject-tag cn-tag">Computer Networks</span>
+                      <span class="task-time-estimate">1.5 hrs</span>
+                    </div>
+                    <span class="task-title">Unit 2: CRC Error Detection & Sliding Window</span>
+                    <span class="task-subtext">Compute generator polynomial checksums and draw selective repeat window diagrams.</span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Task Row 3: Web Programming (1.0 hr) -->
+              <div class="task-row" id="task-row-3">
+                <label class="task-checkbox-label">
+                  <input type="checkbox" class="task-checkbox" id="task-chk-3" data-duration="1.0">
+                  <span class="custom-checkmark" aria-hidden="true"></span>
+                  <div class="task-details">
+                    <div class="task-top-meta">
+                      <span class="task-subject-tag web-tag">Web Programming</span>
+                      <span class="task-time-estimate">1.0 hr</span>
+                    </div>
+                    <span class="task-title">Unit 2: Responsive CSS Grid & Layout Debugging</span>
+                    <span class="task-subtext">Code viva layout exercise using CSS custom variables and media queries.</span>
+                  </div>
+                </label>
+              </div>
+
+            </div>
+
+            <!-- Re-plan Trigger Action Section -->
+            <div class="replan-section">
+              <div class="replan-info">
+                <span class="replan-title">Falling behind today?</span>
+                <span class="replan-desc">Reshuffle pending study hours without losing syllabus balance.</span>
+              </div>
+              <button type="button" class="btn btn-secondary" id="btn-replan">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>Re-plan Sessions</span>
+              </button>
+            </div>
+
+            <!-- Re-plan Demonstration Message (Revealed on click) -->
+            <div id="replan-demo-feedback" class="feedback-banner hidden" role="status">
+              <div class="feedback-icon" aria-hidden="true">ℹ</div>
+              <div class="feedback-text">
+                <strong>Demonstration Notice:</strong> No re-scheduling has occurred. Dynamic redistribution of pending units across remaining days will be calculated by the algorithm in Phase 2.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Subject-Wise Progress & Stats -->
+          <div class="today-progress-column">
+
+            <!-- Subject-wise Progress Card -->
+            <div class="card progress-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Subject-wise Progress</h3>
+                  <p class="card-subtext">Sample completion across registered courses (Illustration)</p>
+                </div>
+                <span class="counter-badge">Semester View</span>
+              </div>
+
+              <div class="progress-bars-container">
+
+                <!-- Progress Item 1: Operating Systems -->
+                <div class="progress-item">
+                  <div class="progress-info-row">
+                    <div class="progress-title-wrap">
+                      <span class="color-dot os-dot" aria-hidden="true"></span>
+                      <span class="progress-subject">Operating Systems</span>
+                    </div>
+                    <span class="progress-fraction">3 of 5 Units (60%)</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Operating Systems Progress">
+                    <div class="progress-fill os-fill" style="width: 60%;"></div>
+                  </div>
+                </div>
+
+                <!-- Progress Item 2: Computer Networks -->
+                <div class="progress-item">
+                  <div class="progress-info-row">
+                    <div class="progress-title-wrap">
+                      <span class="color-dot cn-dot" aria-hidden="true"></span>
+                      <span class="progress-subject">Computer Networks</span>
+                      <span class="badge badge-warning-sm">Lagging</span>
+                    </div>
+                    <span class="progress-fraction">1.5 of 4 Units (38%)</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="Computer Networks Progress">
+                    <div class="progress-fill cn-fill" style="width: 38%;"></div>
+                  </div>
+                </div>
+
+                <!-- Progress Item 3: Web Programming -->
+                <div class="progress-item">
+                  <div class="progress-info-row">
+                    <div class="progress-title-wrap">
+                      <span class="color-dot web-dot" aria-hidden="true"></span>
+                      <span class="progress-subject">Web Programming</span>
+                      <span class="badge badge-success-sm">On Track</span>
+                    </div>
+                    <span class="progress-fraction">4 of 5 Units (80%)</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Web Programming Progress">
+                    <div class="progress-fill web-fill" style="width: 80%;"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Quick Metrics Card -->
+            <div class="card summary-metrics-card">
+              <h3 class="card-title metrics-heading">Prep Health Summary (Sample Data)</h3>
+              <div class="metrics-grid">
+                <div class="metric-box">
+                  <span class="metric-num">4.0</span>
+                  <span class="metric-label">Hours Assigned Today (Target: 4.0 hrs)</span>
+                </div>
+                <div class="metric-box">
+                  <span class="metric-num">31</span>
+                  <span class="metric-label">Days to First Exam (Nov 14)</span>
+                </div>
+                <div class="metric-box">
+                  <span class="metric-num">14</span>
+                  <span class="metric-label">Total Syllabus Units (3 Subjects)</span>
+                </div>
+                <div class="metric-box">
+                  <span class="metric-num">61%</span>
+                  <span class="metric-label">Aggregate Coverage (Sample Data)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Minimal JavaScript for screen navigation and Phase 1 UI interactions -->
+  <script src="script.js"></script>
+</body>
+</html>
